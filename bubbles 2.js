@@ -101,7 +101,7 @@ function circleSelected(){
                     });
                     return (tempvaluecircleselection != 0);
                 };
-d3.csv("data.csv").then(function(data,error){
+d3.csv("Data.csv").then(function(data,error){
     if (error) throw error;
     console.log(data)
     

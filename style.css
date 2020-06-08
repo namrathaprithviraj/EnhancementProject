@@ -100,8 +100,9 @@ ul li{
   margin: 10px;
 }
 
+/***************************Added by Namratha Prithviraj**************************************/
 /*https://stackoverflow.com/questions/32356947/how-to-change-the-width-height-of-a-search-box*/
-#searchWrapper{
+#searchMSA{
     position: absolute;
     width:200px;
     left:50px;
@@ -109,19 +110,68 @@ ul li{
     margin-right: 0px;
 }
 
-#searchWrapper input{
+#searchMSA input{
     width:200px;
+}
+
+#MSASearch{
+    position: relative;
 }
 
 .filters{
     position: absolute;
-    top:110px;
+    top:0;
     left:300px;
-    right:200px;
+    right:0;
     margin-right: 0px;
+    margin:-10px;
 }
 
 .filters li{
     border: 1px solid black;
-    padding: 5px;
+    padding: 3px;
 }
+
+
+
+#searchRegion{
+    position: absolute;
+    width:200px;
+    left:50px;
+    right:200px;
+    top:30px;
+    margin-right: 0px;
+}
+
+#searchRegion input{
+    width:200px;
+}
+
+#RegionSearch{
+    position: relative;
+}
+
+.regionfilters{
+    position: absolute;
+    top:10px;
+    left:270px;
+    right:0;
+    margin-right: 0px;
+    margin:20px;
+}
+
+.regionfilters li{
+    border: 1px solid black;
+    padding: 3px;
+}
+
+#reset {
+  position: absolute;
+  top: 60px;
+  left: 50px;
+}
+
+/*********************************************************************************************/
+
+
+

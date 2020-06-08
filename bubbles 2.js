@@ -1,5 +1,5 @@
 //Define Margin
-var margin = {left: 80, right: 440, top: 50, bottom: 50 }, 
+var margin = {left: 80, right: 440, top: 90, bottom: 50 }, 
     width = 1200 - margin.left -margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -117,7 +117,8 @@ d3.csv("Data.csv").then(function(data,error){
         var PV = "O3 concentration: "
         var POP = "Population: "
         var PD = "Population Density: "
-        var html  = MSA.bold() + d["Core Based Statistical Area"] + "<br>" + PV.bold() + d["Pollutant " + year] + "<br>" + PD.bold() + d["Density " + year] + "<br>" + POP.bold() + formatComma(d["Population " + year]);
+        var html  = MSA.bold() + d["Core Based Statistical Area"] + "<br>" + PV.bold() + d["Pollutant " + year] + "<br>" + PD.bold() + 
+            parseFloat(d["Density " + year]).toFixed(0) + "<br>" + POP.bold() + formatComma(d["Population " + year]);
         tooltip.html(html)
 //            .style("left", (360) + "px")
 //            .style("top", (120) + "px")
@@ -151,6 +152,16 @@ d3.csv("Data.csv").then(function(data,error){
         .attr("cy", function(d) {return new_y_scale(d["Pollutant " + year]);})
         .attr("transform", d3.event.transform)
 };
+    
+    //https://bl.ocks.org/mbostock/db6b4335bf1662b413e7968910104f0f/e59ab9526e02ec7827aa7420b0f02f9bcf960c7da
+    //when the reset button is hit, the zoom is reset to original state
+    d3.select("button")
+    .on("click", function(){
+        console.log("reset")
+        svg.transition()
+      .duration(1500)
+      .call(zoom.transform, d3.zoomIdentity); //change to original zoom
+    });
 
     //append zoom area
     main.append("rect")
@@ -185,6 +196,43 @@ d3.csv("Data.csv").then(function(data,error){
                     .style("opacity", 0.1);
             d3.select(this)
                 .style("opacity", 1);
+            
+            //////////////////////////////////////////////////////////
+                
+                console.log("here");
+                
+                //var dot_id = "d_" + d.properties.geoid;
+                //var dot_elt = document.getElementById(dot_id);
+                //console.log(dot_elt);
+                
+                var id1 = "1_" + d["Core Based Statistical Area"];
+                var id2 = "2_" + d["Core Based Statistical Area"];
+                var elt1 = document.getElementById(id1);
+                var elt2 = document.getElementById(id2);
+
+                //d.properties.selected = !d.properties.selected;
+
+                //console.log("id " + this.id);
+                //help from https://stackoverflow.com/questions/1431094/how-do-i-replace-a-character-at-a-particular-index-in-javascript
+                var id = "1" + this.id.substr(1, this.id.length);
+                console.log("pathId " + id);
+                //id[0] = '2';
+                //console.log(id);
+                var elt = document.getElementById(id);
+                //console.log(elt);
+
+                
+                d3.select("path#\\3"+id1).style("fill", "yellow");
+                d3.select("path#\\3"+id2).style("fill", "yellow");
+                    //console.log("this " + this);
+                d3.select(elt1).style("fill", "yellow");
+                d3.select(elt2).style("fill", "yellow");
+                
+                
+                
+                //////////////////////////////////////////////////////////
+            
+            
         }
         else{
             if(d3.select(this).style("opacity") == 1){
@@ -193,11 +241,40 @@ d3.csv("Data.csv").then(function(data,error){
                 if (!circleSelected2()){
                                     d3.selectAll(".dot")
                     .style("opacity", 0.7);
+                    
+                    
+                    //////////////////////////////////////////////////////////
+                    console.log("here");
+                    
+                    var id1 = "1_" + d["Core Based Statistical Area"];
+                    var id2 = "2_" + d["Core Based Statistical Area"];
+                    var elt1 = document.getElementById(id1);
+                    var elt2 = document.getElementById(id2);
+                    
+                    
+                    d3.select("path#\\3"+id1).style("fill", function(d){
+                        var value_2 = d.properties["Pollutant " + year];
+                        return color_2(value_2);
+                    });
+                    d3.select(elt1).style("fill", function(d){
+                        var value_1 = d.properties["Density " + year];
+                        return color_1(value_1);
+                    });
+
+                    d3.select(elt2).style("fill", function(d){
+                        var value_2 = d.properties["Pollutant " + year];
+                        return color_2(value_2);
+                    });
+                    
+                    //////////////////////////////////////////////////////////
+                    
                 }
             }
             else{
                 d3.select(this)
                 .style("opacity", 1);
+                
+                
             }
         }
     }
@@ -217,7 +294,7 @@ d3.csv("Data.csv").then(function(data,error){
         })
         //.data(data.filter(function(d){return +d["Population 1990"] < 1000000;}))
         .attr("msanum", function (d) { return d["MSA GEOID"]; })
-        .attr("region", function (d) { return d["region"]; })
+        .attr("region", function (d) { return d["region"].split(" ").join(""); })
         .attr("clicked", 0)
         .attr("r", function(d) { return Math.sqrt(d["Population " + year])/75; })//Math.pow(d["Population " + val], (1/3))/5
         .attr("cx", function(d) {return xScale(d["Density " + year]);})
@@ -274,9 +351,13 @@ d3.csv("Data.csv").then(function(data,error){
                 g.append("text")
                 .attr("class", "caption")
                 .attr("x", 0)
-                .attr("y", -6)
+                .attr("y", -20)
                 .attr("font-weight", "bold")
-                .text("Population Density");
+                .text("Population Density")
+                g.append("text")
+                .attr("x", 0)
+                .attr("y", -8)
+                .text("(per sq mile)");
             
             var g = svg_a.append("g")
                 .attr("class", "legendThreshold2")
@@ -284,9 +365,14 @@ d3.csv("Data.csv").then(function(data,error){
                 g.append("text")
                 .attr("class", "caption")
                 .attr("x", 0)
-                .attr("y", -6)
+                .attr("y", -20)
                 .attr("font-weight", "bold")
-                .text("O3 Concentration");
+                .text("O3 Concentration")
+                g.append("text")
+                .attr("x", 0)
+                .attr("y", -8)
+                .text("(parts per million)");
+
             var legend = d3.legendColor()
 //                .labels(function (d) { return labels[d.i]; })
             .cells(6)
@@ -345,16 +431,16 @@ var slider2 = d3.sliderHorizontal()
             .attr("cy", function(d) {return yScale(d["Pollutant " + val]);})
             .attr("clip-path", "url(#clip)");
 //            .on("mouseover", tipMouseover);
-        d3.selectAll(".mass[class*=msa1]")
-			.style("fill", function(d) {
-				  var value_1 = d.properties["Density " + val];
-                  return color_1(value_1);
-            });
-        d3.selectAll(".mass[class*=msa2]")
-			.style("fill", function(d) {
-				  var value_2 = d.properties["Pollutant " + val];
-                  return color_2(value_2);
-            });        //d3.selectAll(".mass")
+//        d3.selectAll(".mass[class*=msa1]")
+//			.style("fill", function(d) {
+//				  var value_1 = d.properties["Density " + val];
+//                  return color_1(value_1);
+//            });
+//        d3.selectAll(".mass[class*=msa2]")
+//			.style("fill", function(d) {
+//				  var value_2 = d.properties["Pollutant " + val];
+//                  return color_2(value_2);
+//            });        //d3.selectAll(".mass")
         //    .style("fill", "blue");
     });
 

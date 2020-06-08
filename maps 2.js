@@ -3,7 +3,7 @@
 
 var year = 1990;
 //Width and height
-var margin = {left: 40, right: 40, top: 10, bottom: 30 }, 
+var margin = {left: 40, right: 40, top: -20, bottom: 30 }, 
     w = 500 - margin.left -margin.right,
     h = 300 - margin.top - margin.bottom;
 //			var w = 500;
@@ -47,7 +47,13 @@ var margin = {left: 40, right: 40, top: 10, bottom: 30 },
 
             var filtered = [];
 
+            var regionFilter = [];
+
             var display;
+
+            var onMSAInput;
+
+            var onRegionInput;
 
             var dataset;
 
@@ -103,7 +109,7 @@ var margin = {left: 40, right: 40, top: 10, bottom: 30 },
 					.append("path")
 					.attr("d", path)
                     .attr("id", function(d){
-                        return "1_" + d.properties.region; 
+                        return "1_" + d.properties.region.split(" ").join(""); 
                     })
                     .attr("stroke", "#222")
 //                    .attr("id", "temp")
@@ -127,7 +133,9 @@ var margin = {left: 40, right: 40, top: 10, bottom: 30 },
                         //var circleSelected = ;
                         //console.log(circleSelected())
                         var id = "2" + this.id.substr(1, this.id.length);
+                        console.log("id " + d3.select(this).attr("id"));
                         var elt = document.getElementById(id);
+                        console.log("elt " + d3.select(elt).attr("clicked"));
                         clicked = (d3.select(this).attr("clicked") == 0) && (d3.select(elt).attr("clicked") == 0);
                         if(!clicked){
                             numRegionsSelected--;
@@ -143,6 +151,7 @@ var margin = {left: 40, right: 40, top: 10, bottom: 30 },
                                     .style("opacity", 0.7);
                             }
                             var region_class = this.id.substr(2,this.id.length);
+                            console.log("region class " + region_class);
                             //console.log(region_class);
                             var test_1 = ".msa1." + region_class;
                             //console.log(test_1);
@@ -184,7 +193,7 @@ var margin = {left: 40, right: 40, top: 10, bottom: 30 },
 					.append("path")
 					.attr("d", path)
                     .attr("id", function(d) {
-                        return "2_" + d.properties.region; 
+                        return "2_" + d.properties.region.split(" ").join(""); 
                     })
                     .attr("stroke", "#222")
                     .attr("stroke-width", 0.04)
@@ -444,7 +453,6 @@ var margin = {left: 40, right: 40, top: 10, bottom: 30 },
                             //displayMSA(document.getElementById('searchBox').value);
                         
                         
-                        
                             //https://www.jamesqquick.com/blog/build-a-javascript-search-bar
                             searchBar.addEventListener("keyup", e => {
                                 e.which = e.which || e.keyCode;
@@ -460,12 +468,19 @@ var margin = {left: 40, right: 40, top: 10, bottom: 30 },
 //                                });
                                 //const filteredMSA = document.getElementById('searchBox').value;
                                     console.log("true");  
-                                
+                                    searchBar.placeholder = searchBar.placeholder;
                                     makefiltered(searchString);
 
                                     //displayMSA(searchString);
                                 }
                             });
+                        
+                        //https://stackoverflow.com/questions/30022728/perform-action-when-clicking-html5-datalist-option
+                        onMSAInput = function onInput(){
+                            var val = document.getElementById("searchBar").value;
+                            document.getElementById("searchBar").value = "";
+                            makefiltered(val);
+                        }    
                         
                         
                         function makefiltered(filter){
@@ -473,81 +488,35 @@ var margin = {left: 40, right: 40, top: 10, bottom: 30 },
                             filtered.push(filter);
                             
                             var list = document.querySelector('.filters');
-                            
-                            
-//                            svg.selectAll("rect")
-//                               .data(filtered)
-//                               .enter()
-//                               .append("rect")
-//                               .attr("x", (d, i) => 300 + (i * 130))
-//                               .attr("y", (d, i) => 110)
-//                               .attr("width", 100)
-//                               .attr("height", 50);
-//
-//                            svg.selectAll("text")
-//                              .data(filtered)
-//                              .enter()
-//                              .append("text")
-//                               // Add your code below this line
-//                              .attr("x",(d, i)=>300 + (i * 130))
-//                              .attr("y",(d)=> 110)
-//                              .text((d)=>d)
-//                              .attr("fill", "black");
-                            
-                            
-                            
-                            
-                            for (i = 0; i < filtered.length; ++i) {
-                                // create an item for each one
-                                var listItem = document.createElement('li');
-                                
-                                
+                            var listItem = document.createElement('li');
 
                                 // Add the item text
-                                listItem.innerHTML = filtered[i] + '<i class="fa fa-times" aria-hidden="true"></i>';
+                                listItem.innerHTML = filter + '<i class="fa fa-times" aria-hidden="true"></i>';
                                 //https://stackoverflow.com/questions/11846492/how-to-add-onclick-event-while-creating-an-element-with-javascript
-                                (function(value){
-                                    listItem.addEventListener("click", function() {
-                                       display(value);
-                                        filtered.splice(filtered.indexOf(value, 1));
-                                        listItem.innerHTML = ''; //https://stackoverflow.com/questions/18795028/javascript-remove-li-without-removing-ul
-                                    }, false);})(filtered[i]);
+                                
                                 console.log("listItem " + listItem.innerHTML);
 
                                 
                                 // Add listItem to the listElement
                                 list.appendChild(listItem);
                                 console.log(list);
-                            }
-                            
-                            //onclick="display(this.innerHTML.substring(0, this.innerHTML.indexOf(\'<\')))"
-                            
-                            
-                            
-//                            
-//                            item.innerHTML = filter;
-//                            
-//                            console.log(item.innerHTML);
-//
-//                                // Add it to the list:
-//                            list.appendChild(item);
+                                
+                                (function(value){
+                                    listItem.addEventListener("click", function() {
+                                       display(value);
+                                        filtered.splice(filtered.indexOf(value, 1));
+                                        list.removeChild(listItem);//https://stackoverflow.com/questions/36035736/add-remove-li-element-from-the-ul-javascript
+                                    }, false);})(filter);
                             
                             
-                            
-                            for(var i = 0; i < filtered.length; i++){
-                                display(filtered[i]);
-                            }
-                            
-                            
+                            display(filter);
 
                             // Finally, return the constructed list:
                             return list;
                         }
+                                              
                         
-                        
-                        
-                        
-                        
+                        //display the selected MSA on map and bubble chart
                         display = function displayMSA(filteredMSA){
                             console.log("display");
                             
@@ -624,6 +593,147 @@ var margin = {left: 40, right: 40, top: 10, bottom: 30 },
                                 .style("opacity", 0.7);              
                             }
                         }
+                        
+                        
+                        //https://stackoverflow.com/questions/26625916/search-bar-with-dropdown-results
+                            for(var k = 0; k < json.features.length; k++){
+                                    var optionElement = document.createElement("option");
+                                    optionElement.value = json.features[k].properties.region;
+                                    document.getElementById("regionlist").appendChild(optionElement);
+                                    //console.log(optionElement.value)
+                                
+                            }
+                            //displayMSA(document.getElementById('searchBox').value);
+                        
+                        
+                        
+                            //https://www.jamesqquick.com/blog/build-a-javascript-search-bar
+                            regionsearchBar.addEventListener("keyup", e => {
+                                e.which = e.which || e.keyCode;
+                                if(e.which == 13) {
+                                  const searchString = e.target.value;
+                                    console.log(searchString);
+//                                const filteredMSA = document.getElementById("msalist").filter(msa => {
+//                                  return (
+//                                    msa.value.includes(searchString)
+//                                  );
+//                                
+//                                      
+//                                });
+                                //const filteredMSA = document.getElementById('searchBox').value;
+                                    console.log("true");  
+                                
+                                    regionfiltered(searchString);
+
+                                    //displayMSA(searchString);
+                                }
+                            });
+                        
+                        //https://stackoverflow.com/questions/30022728/perform-action-when-clicking-html5-datalist-option
+                        onRegionInput = function onInput(){
+                            var val = document.getElementById("regionsearchBar").value;
+                            document.getElementById("regionsearchBar").value = "";
+                            regionfiltered(val);
+                        }   
+                        
+                        
+                        function regionfiltered(filter){
+                            
+                            regionFilter.push(filter);
+                            
+                            var regionlist = document.querySelector('.regionfilters');
+                            var listItem = document.createElement('li');
+
+                                // Add the item text
+                                listItem.innerHTML = filter + '<i class="fa fa-times" aria-hidden="true"></i>';
+                                //https://stackoverflow.com/questions/11846492/how-to-add-onclick-event-while-creating-an-element-with-javascript
+                                
+                                console.log("listItem " + listItem.innerHTML);
+
+                                
+                                // Add listItem to the listElement
+                                regionlist.appendChild(listItem);
+                                //console.log(list);
+                                
+                                (function(value){
+                                    listItem.addEventListener("click", function() {
+                                       displayRegions(value);
+                                        regionFilter.splice(regionFilter.indexOf(value, 1));
+                                        regionlist.removeChild(listItem);//https://stackoverflow.com/questions/36035736/add-remove-li-element-from-the-ul-javascript
+                                    }, false);})(filter);
+                            
+                            
+                            displayRegions(filter);
+
+                            // Finally, return the constructed list:
+                            return regionlist;
+                        }
+                        
+                        
+                        
+                        
+                        function displayRegions(filteredRegion){
+                             //var circleSelected = ;
+                        //console.log(circleSelected())
+                        var id1 = "1_" + filteredRegion.split(" ").join("");
+                        console.log("id1 " + id1);    
+                        var id2 = "2_" + filteredRegion.split(" ").join("");
+                        console.log("id2 " + id2);
+                        var elt1 = document.getElementById(id1);
+                        console.log("elt1 " + d3.select("path#\\3"+id1.split(" ").join(" ")).attr("id"));
+                        var elt2 = document.getElementById(id2); 
+                        console.log("elt2 " + d3.select(elt2).attr("clicked"));
+                        clicked = (d3.select("path#\\3"+id1).attr("clicked") == 0) && (d3.select(elt2).attr("clicked") == 0);
+                        if(!clicked){
+                            numRegionsSelected--;
+                            d3.select("path#\\3"+id1).attr("clicked", 0);
+                            d3.select(elt2).attr("clicked", 0);
+                            d3.select("path#\\3"+id1).style("fill", "rgb(237,237,237)");
+                            d3.select(elt2).style("fill", "rgb(237,237,237)");
+                            d3.selectAll(".dot[region='" + filteredRegion.split(" ").join("") + "']")
+                             .style("opacity", 0.1);
+                            if (!circleSelected2())
+                            {
+                                d3.selectAll(".dot")
+                                    .style("opacity", 0.7);
+                            }
+                            var region_class = filteredRegion.split(" ").join("");
+                            //console.log(region_class);
+                            var test_1 = ".msa1." + region_class;
+                            //console.log(test_1);
+                           d3.selectAll(test_1).style("fill", function(d){
+                                console.log(d);
+                                var value_1 = d.properties["Density " + year];
+                                return color_1(value_1);
+                            });
+                            var test_2 = ".msa2." + region_class;
+                           d3.selectAll(test_2).style("fill", function(d){
+                                console.log(d);
+                                var value_2 = d.properties["Pollutant " + year];
+                                return color_2(value_2);
+                            });
+                            return;
+                        }
+                        d3.select("path#\\3"+id1).style("fill", "rgb(211,211,211)");
+                        d3.select(elt2).style("fill", "rgb(211,211,211)");
+                        if (!circleSelected())
+                        {
+                            d3.selectAll(".dot")
+                                .style("opacity", 0.1);                                
+                        }
+                         d3.selectAll(".dot[region='" + filteredRegion.split(" ").join("") + "']")
+                             .style("opacity", 1);
+                         d3.select("path#\\3"+id1).attr("clicked", 1);
+                         d3.select(elt2).attr("clicked", 1);
+                         numRegionsSelected++;
+                        }
+                        
+                        
+                        
+                        
+                        
+                        
+                        
                         
  //////////////////////////////////////////////////////////////////////////////////////// 
 

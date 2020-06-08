@@ -25,6 +25,11 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
             var color_2 = d3.scaleLinear()
                                 .domain([.04, .08, .12, .16])
                                 .range(d3.schemeBlues[5]);
+
+
+            var colors = d3.scaleOrdinal()
+              .domain(["Mideast", "Great Lakes", "Southwest", "Southeast", "Far West", "Plains", "Rocky Mountain", "New England"])
+              .range(d3.schemeCategory10);
 								
 
             //var div = d3.select("body").append("div").attr("align", "right");
@@ -441,8 +446,10 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                     //Added by Namratha Prithviraj    
                     //Search bar        
                         
-                            
+               ////////////////////////////////////
+                        //search MSA
                             //https://stackoverflow.com/questions/26625916/search-bar-with-dropdown-results
+                            //Add all the MSAs to the dropdown list
                             for(var k = 0; k < json_2.features.length; k++){
                                     var optionElement = document.createElement("option");
                                     optionElement.value = json_2.features[k].properties.name;
@@ -451,31 +458,26 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                                 
                             }
                             //displayMSA(document.getElementById('searchBox').value);
-                        
+                            
                         
                             //https://www.jamesqquick.com/blog/build-a-javascript-search-bar
+                            //Check to see user input in search bar
                             searchBar.addEventListener("keyup", e => {
                                 e.which = e.which || e.keyCode;
                                 if(e.which == 13) {
                                   const searchString = e.target.value;
                                     console.log(searchString);
-//                                const filteredMSA = document.getElementById("msalist").filter(msa => {
-//                                  return (
-//                                    msa.value.includes(searchString)
-//                                  );
-//                                
-//                                      
-//                                });
-                                //const filteredMSA = document.getElementById('searchBox').value;
+                                
                                     console.log("true");  
                                     searchBar.placeholder = searchBar.placeholder;
                                     makefiltered(searchString);
 
-                                    //displayMSA(searchString);
+                                    
                                 }
                             });
                         
                         //https://stackoverflow.com/questions/30022728/perform-action-when-clicking-html5-datalist-option
+                        //If the user chooses an option from the drop down
                         onMSAInput = function onInput(){
                             var val = document.getElementById("searchBar").value;
                             document.getElementById("searchBar").value = "";
@@ -494,6 +496,7 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                                 listItem.innerHTML = filter + '<i class="fa fa-times" aria-hidden="true"></i>';
                                 //https://stackoverflow.com/questions/11846492/how-to-add-onclick-event-while-creating-an-element-with-javascript
                                 
+                                
                                 console.log("listItem " + listItem.innerHTML);
 
                                 
@@ -501,14 +504,15 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                                 list.appendChild(listItem);
                                 console.log(list);
                                 
+                                //if the item is clicked, it needs to be deleted
                                 (function(value){
                                     listItem.addEventListener("click", function() {
-                                       display(value);
+                                       display(value);//unselect the dot/area
                                         filtered.splice(filtered.indexOf(value, 1));
                                         list.removeChild(listItem);//https://stackoverflow.com/questions/36035736/add-remove-li-element-from-the-ul-javascript
                                     }, false);})(filter);
                             
-                            
+                            //change the selections
                             display(filter);
 
                             // Finally, return the constructed list:
@@ -533,15 +537,15 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                             }
                             console.log("name " + d.properties.name)
                             
-                            if (!circleSelected()){
+                            if (!circleSelected()){ //if the circle is not the one that is selected
                                     d3.selectAll(".dot")
                                         .style("opacity", 0.1);
                                 }
-                            var dot_id = "d_" + d.properties.geoid;
+                            var dot_id = "d_" + d.properties.geoid; //get the dot ids
                             var dot_elt = document.getElementById(dot_id);
                             //console.log(dot_elt);
 
-                            d.properties.selected = !d.properties.selected;
+                            d.properties.selected = !d.properties.selected; 
                             
 
                             //console.log("id " + d.id);
@@ -561,7 +565,7 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                             console.log("Selected " + d.properties.selected);
 
                             if(d.properties.selected){
-                                d3.select("path#\\3"+id1).style("fill", "yellow");
+                                d3.select("path#\\3"+id1).style("fill", "yellow"); //fill the MSA on the map yellow if the dot is selected
                                 //d3.select("path#\\3"+id2).style("fill", "yellow");
                                 d3.select(elt1).style("fill", "yellow");
                                 d3.select(elt2).style("fill", "yellow");
@@ -594,8 +598,21 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                             }
                         }
                         
+                        //search MSA
+            ////////////////////////////////////
+                                    
+                        
+                        
+            
+                    
+            
+            ////////////////////////////////////
+                        //search Region
+                        
+                        
                         
                         //https://stackoverflow.com/questions/26625916/search-bar-with-dropdown-results
+                            //add regions to drop down list
                             for(var k = 0; k < json.features.length; k++){
                                     var optionElement = document.createElement("option");
                                     optionElement.value = json.features[k].properties.region;
@@ -608,28 +625,21 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                         
                         
                             //https://www.jamesqquick.com/blog/build-a-javascript-search-bar
+                            //check for keyboard event in search bar
                             regionsearchBar.addEventListener("keyup", e => {
                                 e.which = e.which || e.keyCode;
                                 if(e.which == 13) {
                                   const searchString = e.target.value;
                                     console.log(searchString);
-//                                const filteredMSA = document.getElementById("msalist").filter(msa => {
-//                                  return (
-//                                    msa.value.includes(searchString)
-//                                  );
-//                                
-//                                      
-//                                });
-                                //const filteredMSA = document.getElementById('searchBox').value;
                                     console.log("true");  
                                 
                                     regionfiltered(searchString);
 
-                                    //displayMSA(searchString);
                                 }
                             });
                         
                         //https://stackoverflow.com/questions/30022728/perform-action-when-clicking-html5-datalist-option
+                        //if user selects from dropdown list
                         onRegionInput = function onInput(){
                             var val = document.getElementById("regionsearchBar").value;
                             document.getElementById("regionsearchBar").value = "";
@@ -649,12 +659,16 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                                 //https://stackoverflow.com/questions/11846492/how-to-add-onclick-event-while-creating-an-element-with-javascript
                                 
                                 console.log("listItem " + listItem.innerHTML);
+                            
+                                listItem.style.color = colors(filter);
+                                
 
                                 
                                 // Add listItem to the listElement
                                 regionlist.appendChild(listItem);
                                 //console.log(list);
                                 
+                                //when clicked on, should be deleted from list and get unselected
                                 (function(value){
                                     listItem.addEventListener("click", function() {
                                        displayRegions(value);
@@ -671,11 +685,11 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                         
                         
                         
-                        
+                        //display the regions on scatterplot and maps
                         function displayRegions(filteredRegion){
                              //var circleSelected = ;
                         //console.log(circleSelected())
-                        var id1 = "1_" + filteredRegion.split(" ").join("");
+                        var id1 = "1_" + filteredRegion.split(" ").join("");//get the id with no spaces
                         console.log("id1 " + id1);    
                         var id2 = "2_" + filteredRegion.split(" ").join("");
                         console.log("id2 " + id2);
@@ -683,45 +697,45 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                         console.log("elt1 " + d3.select("path#\\3"+id1.split(" ").join(" ")).attr("id"));
                         var elt2 = document.getElementById(id2); 
                         console.log("elt2 " + d3.select(elt2).attr("clicked"));
-                        clicked = (d3.select("path#\\3"+id1).attr("clicked") == 0) && (d3.select(elt2).attr("clicked") == 0);
-                        if(!clicked){
+                        clicked = (d3.select("path#\\3"+id1).attr("clicked") == 0) && (d3.select(elt2).attr("clicked") == 0); //is the region clicked
+                        if(!clicked){//unselected the region
                             numRegionsSelected--;
                             d3.select("path#\\3"+id1).attr("clicked", 0);
                             d3.select(elt2).attr("clicked", 0);
-                            d3.select("path#\\3"+id1).style("fill", "rgb(237,237,237)");
+                            d3.select("path#\\3"+id1).style("fill", "rgb(237,237,237)");//unselected color
                             d3.select(elt2).style("fill", "rgb(237,237,237)");
                             d3.selectAll(".dot[region='" + filteredRegion.split(" ").join("") + "']")
                              .style("opacity", 0.1);
                             if (!circleSelected2())
                             {
                                 d3.selectAll(".dot")
-                                    .style("opacity", 0.7);
+                                    .style("opacity", 0.7);//set scatterplot to default opacity
                             }
                             var region_class = filteredRegion.split(" ").join("");
                             //console.log(region_class);
                             var test_1 = ".msa1." + region_class;
                             //console.log(test_1);
-                           d3.selectAll(test_1).style("fill", function(d){
+                           d3.selectAll(test_1).style("fill", function(d){//the color should be unselected color
                                 console.log(d);
                                 var value_1 = d.properties["Density " + year];
                                 return color_1(value_1);
                             });
                             var test_2 = ".msa2." + region_class;
-                           d3.selectAll(test_2).style("fill", function(d){
+                           d3.selectAll(test_2).style("fill", function(d){//the color should be unselected color
                                 console.log(d);
                                 var value_2 = d.properties["Pollutant " + year];
                                 return color_2(value_2);
                             });
                             return;
                         }
-                        d3.select("path#\\3"+id1).style("fill", "rgb(211,211,211)");
+                        d3.select("path#\\3"+id1).style("fill", "rgb(211,211,211)");//highlight the selected region
                         d3.select(elt2).style("fill", "rgb(211,211,211)");
                         if (!circleSelected())
                         {
                             d3.selectAll(".dot")
                                 .style("opacity", 0.1);                                
                         }
-                         d3.selectAll(".dot[region='" + filteredRegion.split(" ").join("") + "']")
+                         d3.selectAll(".dot[region='" + filteredRegion.split(" ").join("") + "']")//select all the dots in the region
                              .style("opacity", 1);
                          d3.select("path#\\3"+id1).attr("clicked", 1);
                          d3.select(elt2).attr("clicked", 1);

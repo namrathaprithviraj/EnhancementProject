@@ -153,6 +153,8 @@ d3.csv("Data.csv").then(function(data,error){
         .attr("transform", d3.event.transform)
 };
     
+    /////////////////////////////////////////////////
+    //Added by Namratha Prithviraj
     //https://bl.ocks.org/mbostock/db6b4335bf1662b413e7968910104f0f/e59ab9526e02ec7827aa7420b0f02f9bcf960c7da
     //when the reset button is hit, the zoom is reset to original state
     d3.select("button")
@@ -162,6 +164,8 @@ d3.csv("Data.csv").then(function(data,error){
       .duration(1500)
       .call(zoom.transform, d3.zoomIdentity); //change to original zoom
     });
+    
+    /////////////////////////////////////////////////
 
     //append zoom area
     main.append("rect")
@@ -198,14 +202,14 @@ d3.csv("Data.csv").then(function(data,error){
                 .style("opacity", 1);
             
             //////////////////////////////////////////////////////////
+            //Added by Namratha Prithviraj
                 
                 console.log("here");
+            
+                //if dot is selected, need to select on the maps
                 
-                //var dot_id = "d_" + d.properties.geoid;
-                //var dot_elt = document.getElementById(dot_id);
-                //console.log(dot_elt);
                 
-                var id1 = "1_" + d["Core Based Statistical Area"];
+                var id1 = "1_" + d["Core Based Statistical Area"]; //get ids of the MSA on map
                 var id2 = "2_" + d["Core Based Statistical Area"];
                 var elt1 = document.getElementById(id1);
                 var elt2 = document.getElementById(id2);
@@ -222,7 +226,7 @@ d3.csv("Data.csv").then(function(data,error){
                 //console.log(elt);
 
                 
-                d3.select("path#\\3"+id1).style("fill", "yellow");
+                d3.select("path#\\3"+id1).style("fill", "yellow"); //fill MSA on both maps with yellow
                 d3.select("path#\\3"+id2).style("fill", "yellow");
                     //console.log("this " + this);
                 d3.select(elt1).style("fill", "yellow");
@@ -244,6 +248,10 @@ d3.csv("Data.csv").then(function(data,error){
                     
                     
                     //////////////////////////////////////////////////////////
+                    //Added by Namratha Prithviraj
+                    
+                    //if dot is unselected, then unselect on the map
+                    
                     console.log("here");
                     
                     var id1 = "1_" + d["Core Based Statistical Area"];
@@ -252,7 +260,7 @@ d3.csv("Data.csv").then(function(data,error){
                     var elt2 = document.getElementById(id2);
                     
                     
-                    d3.select("path#\\3"+id1).style("fill", function(d){
+                    d3.select("path#\\3"+id1).style("fill", function(d){ //change the color back to original color
                         var value_2 = d.properties["Pollutant " + year];
                         return color_2(value_2);
                     });
@@ -261,7 +269,7 @@ d3.csv("Data.csv").then(function(data,error){
                         return color_1(value_1);
                     });
 
-                    d3.select(elt2).style("fill", function(d){
+                    d3.select(elt2).style("fill", function(d){ 
                         var value_2 = d.properties["Pollutant " + year];
                         return color_2(value_2);
                     });
@@ -449,7 +457,7 @@ var g = d3.select("div#slider2").append("svg")
     .attr("width", 1000)
     .attr("height", 100)
     .append("g")
-    .attr("transform", "translate(30,30)");
+    .attr("transform", "translate(30,10)");
 
 g.call(slider2);
 

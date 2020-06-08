@@ -27,12 +27,15 @@ body {
 #maps {
     width: 200px;
     float: right;
+    position: relative;
 }
 
 .map1 {
     float: right;
 /*    position: fixed;*/
 }
+
+
 
 .map2 {
     float: right;
@@ -89,7 +92,7 @@ body {
 }
 .column {
     text-align: center;
-    height: 250px;
+    height: 500px;
 }
 
 ul{
@@ -130,6 +133,7 @@ ul li{
 .filters li{
     border: 1px solid black;
     padding: 3px;
+    box-shadow: 1px 1px 2px #555;
 }
 
 
@@ -153,7 +157,7 @@ ul li{
 
 .regionfilters{
     position: absolute;
-    top:10px;
+    top: 0px;
     left:270px;
     right:0;
     margin-right: 0px;
@@ -163,12 +167,20 @@ ul li{
 .regionfilters li{
     border: 1px solid black;
     padding: 3px;
+    box-shadow: 1px 1px 2px #555;
 }
 
 #reset {
   position: absolute;
-  top: 60px;
+  top: 600px;
   left: 50px;
+}
+
+#mapInstr{
+    position: absolute;
+    top: 90px;
+    left: 1060px;
+    color: gray;
 }
 
 /*********************************************************************************************/

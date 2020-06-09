@@ -462,20 +462,21 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                         
                             //https://www.jamesqquick.com/blog/build-a-javascript-search-bar
                             //Check to see user input in search bar
-                            searchBar.addEventListener("keyup", e => {
-                                e.which = e.which || e.keyCode;
-                                if(e.which == 13) {
-                                  const searchString = e.target.value;
-                                    console.log(searchString);
-                                
-                                    console.log("true");  
-                                    searchBar.placeholder = searchBar.placeholder;
-                                    makefiltered(searchString);
-
-                                    
-                                }
-                            });
                         
+//                            searchBar.addEventListener("keyup", e => {
+//                                e.which = e.which || e.keyCode;
+//                                if(e.which == 13) {
+//                                  const searchString = e.target.value;
+//                                    console.log("search String" + searchString);
+//                                
+//                                    console.log("true");  
+//                                    searchBar.placeholder = searchBar.placeholder;
+//                                    makefiltered(searchString);
+//
+//                                    
+//                                }
+//                            });
+//                        
                         //https://stackoverflow.com/questions/30022728/perform-action-when-clicking-html5-datalist-option
                         //If the user chooses an option from the drop down
                         onMSAInput = function onInput(){
@@ -626,17 +627,18 @@ var margin = {left: 40, right: 40, top: -20, bottom: 30 },
                         
                             //https://www.jamesqquick.com/blog/build-a-javascript-search-bar
                             //check for keyboard event in search bar
-                            regionsearchBar.addEventListener("keyup", e => {
-                                e.which = e.which || e.keyCode;
-                                if(e.which == 13) {
-                                  const searchString = e.target.value;
-                                    console.log(searchString);
-                                    console.log("true");  
-                                
-                                    regionfiltered(searchString);
-
-                                }
-                            });
+                        
+//                            regionsearchBar.addEventListener("keyup", e => {
+//                                e.which = e.which || e.keyCode;
+//                                if(e.which == 13) {
+//                                  const searchString = e.target.value;
+//                                    console.log(searchString);
+//                                    console.log("true");  
+//                                
+//                                    regionfiltered(searchString);
+//
+//                                }
+//                            });
                         
                         //https://stackoverflow.com/questions/30022728/perform-action-when-clicking-html5-datalist-option
                         //if user selects from dropdown list
